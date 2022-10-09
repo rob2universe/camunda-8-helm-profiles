@@ -13,3 +13,8 @@ ingress-azure: namespace azure-gateway-ip-address
 .PHONY: clean-ingress-azure
 clean-ingress-azure:
 	kubectl delete ingress ingress-azure -n camunda
+
+# https://learn.microsoft.com/en-us/cli/azure/network/application-gateway/ssl-cert?view=azure-cli-latest
+.PHONY: upload-certificate
+upload-certificate:
+	az network application-gateway ssl-cert create -n mySelfSignedCert --gateway-name $(gatewayName) -g $(nodeResourceGroup) --cert-file ../cert/appgwcert.pfx --cert-password camunda4tw

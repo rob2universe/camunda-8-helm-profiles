@@ -1,0 +1,50 @@
+# Example OpenSSL configuration file
+
+[ req ]
+default_bits		= 2048
+distinguished_name	= req_distinguished_name
+attributes		= req_attributes
+prompt			= no
+req_extensions		= v3_req
+
+[ req_distinguished_name ]
+# The first 6 below could be shortened to: C ST L O OU CN
+# Eg the details below would be shown as:
+#    Subject: C=UK, ST=Hertfordshire, L=My Town, O=Some Organisation, OU=Some Department, CN=www.example.com/emailAddress=bofh@example.com
+
+# Leave as long names as it helps documentation
+
+countryName=		DE
+stateOrProvinceName=	Berlin
+localityName=		Berlin
+organizationName=	MyCamunda
+organizationalUnitName=	Consulting
+commonName=		www.example.com
+emailAddress=		someone@example.com
+
+[ req_attributes ]
+# None. Could put Challenge Passwords, don't want them, leave empty
+
+[ v3_req ]
+
+# X509v3 extensions to add to a certificate request
+# See x509v3_config
+
+# What the key can/cannot be used for:
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth,serverAuth
+
+# The subjectAltName is where you give the names of extra web sites.
+# You may have more than one of these, so put in the section [ alt_names ]
+# If you do not have any extra names, comment the next line out.
+# subjectAltName = @alt_names
+
+# List of all the other DNS names that the certificate should work for.
+# alt_names is a name of my own invention
+[ alt_names ]
+DNS.1 = keycloak.52.226.233.56.nip.io
+DNS.2 = identity.52.226.233.56.nip.io
+DNS.3 = operate.52.226.233.56.nip.io
+DNS.4 = optimize.52.226.233.56.nip.io
+DNS.5 = tasklist.52.226.233.56.nip.io

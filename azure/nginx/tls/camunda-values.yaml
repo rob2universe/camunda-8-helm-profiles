@@ -28,39 +28,6 @@ global:
 
 operate:
   contextPath: "/operate"
-  camunda-operate:
-    data:
-    application.yml: |
-      # Operate configuration file
-      camunda.operate:
-        # ELS instance to store Operate data
-        elasticsearch:
-          # Cluster name
-          clusterName: elasticsearch
-          # Host
-          host: elasticsearch-master
-          # Transport port
-          port: 9200
-        # Zeebe instance
-        zeebe:
-          # Broker contact point
-          brokerContactPoint: "camunda-zeebe-gateway:26500"
-        # ELS instance to export Zeebe data to
-        zeebeElasticsearch:
-          # Cluster name
-          clusterName: elasticsearch
-          # Host
-          host: elasticsearch-master
-          # Transport port
-          port: 9200
-          # Index prefix, configured in Zeebe Elasticsearch exporter
-          prefix: zeebe-record
-      logging:
-        level:
-          ROOT: INFO
-          io.camunda.operate: DEBUG
-      #Spring Boot Actuator endpoints to be exposed
-      management.endpoints.web.exposure.include: health,info,conditions,configprops,prometheus,metrics
 
 tasklist:
   contextPath: "/tasklist"
@@ -70,13 +37,13 @@ optimize:
 
 identity:
   contextPath: "/identity"
-  fullURL: "https://mydnslabel.eastus.cloudapp.azure.com/identity"
+  fullURL: "https://dnslabel.eastus.cloudapp.azure.com/identity"
   
   keycloak:
   #  ingress:
   #    enabled: true
   #    ingressClassName: nginx
-  #    hostname: "mydnslabel.eastus.cloudapp.azure.com"
+  #    hostname: "dnslabel.eastus.cloudapp.azure.com"
   #    path: "/keycloak"
   #    tls: true
   #    extraHosts: []
@@ -88,13 +55,13 @@ identity:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
       - name: KEYCLOAK_FRONTEND_URL
-        value: "https://mydnslabel.eastus.cloudapp.azure.com/auth"
+        value: "https://dnslabel.eastus.cloudapp.azure.com/auth"
 
 zeebe-gateway:
   ingress:
     enabled: true
     className: nginx
-    host: "zeebe.mydnslabel.eastus.cloudapp.azure.com"
+    host: "zeebe.dnslabel.eastus.cloudapp.azure.com"
   replicas: 1
   resources:
     requests:

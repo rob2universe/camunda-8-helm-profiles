@@ -37,31 +37,31 @@ optimize:
 
 identity:
   contextPath: "/identity"
-  fullURL: "https://dnslabel.eastus.cloudapp.azure.com/identity"
+  fullURL: "https://dnslabel.location.cloudapp.azure.com/identity"
   
   keycloak:
   #  ingress:
   #    enabled: true
   #    ingressClassName: nginx
-  #    hostname: "dnslabel.eastus.cloudapp.azure.com"
+  #    hostname: "dnslabel.location.cloudapp.azure.com"
   #    path: "/keycloak"
   #    tls: true
   #    extraHosts: []
   #    extraTls:
   #    - hosts:
-  #      - mydnslabel.eastus.cloudapp.azure.com
+  #      - dnslabel.location.cloudapp.azure.com
   #      secretName: "tls-secret"
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
       - name: KEYCLOAK_FRONTEND_URL
-        value: "https://dnslabel.eastus.cloudapp.azure.com/auth"
+        value: "https://dnslabel.location.cloudapp.azure.com/auth"
 
 zeebe-gateway:
   ingress:
     enabled: true
     className: nginx
-    host: "zeebe.dnslabel.eastus.cloudapp.azure.com"
+    host: "zeebe.dnslabel.location.cloudapp.azure.com"
   replicas: 1
   resources:
     requests:

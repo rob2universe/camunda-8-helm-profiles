@@ -3,7 +3,6 @@ release ?= camunda
 chart ?= camunda/camunda-platform
 chartValues ?= camunda-values.yaml
 
-
 .PHONY: all
 all: camunda
 

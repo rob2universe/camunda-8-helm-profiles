@@ -1,15 +1,16 @@
 .PHONY: camunda
-camunda: namespace
+camunda:
 	@echo "Attempting to install camunda using chartValues: $(chartValues)"
 	helm repo add camunda https://helm.camunda.io
 	helm repo update camunda
 	helm search repo $(chart)
-	helm install --namespace $(namespace) $(release) $(chart) -f $(chartValues) --skip-crds
+	helm install --namespace $(namespace) $(release) $(chart) -f $(chartValues) --skip-crds --create-namespace
+# 	-kubectl config set-context --current --namespace=$(namespace)
 
-.PHONY: namespace
-namespace:
-	-kubectl create namespace $(namespace)
-	-kubectl config set-context --current --namespace=$(namespace)
+# .PHONY: namespace
+# namespace:
+# 	-kubectl create namespace $(namespace)
+# 	-kubectl config set-context --current --namespace=$(namespace)
 
 # Generates templates from the camunda helm charts, useful to make some more specific changes which are not doable by the values file.
 .PHONY: template
@@ -129,4 +130,13 @@ url-grafana:
 open-grafana:
 	xdg-open http://$(shell kubectl get services metrics-grafana-loadbalancer -n default -o jsonpath={..ip})/d/I4lo7_EZk/zeebe?var-namespace=$(namespace) &
 
+.PHONY: operate-config
+operate-config:
+	kubectl get cm -n $(namespace) camunda-operate -o=yaml
 
+.PHONY: metrics
+metrics:
+	kubectl get cm -n $(namespace) camunda-operate -o=yaml | \
+	sed "s/health,/health,metrics,/g;" | \
+	kubectl create cm camunda-operate -o yaml --dry-run=client | \
+	kubectl replace -f - 

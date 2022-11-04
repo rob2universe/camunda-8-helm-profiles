@@ -36,34 +36,8 @@ zeebe:
       memory: "2Gi"
 
 zeebe-gateway:
-  logLevel:
-# add interceptor jar to container
-  extraVolumes:
-  - name: interceptors
-    emptyDir: {}
-  extraInitContainers:
-  - name: init-interceptors
-    image: busybox
-    # k logs -l app.kubernetes.io/component=zeebe-gateway -c init-interceptors
-    command: ['/bin/sh', '-c']
-    args: ['wget -qO- --no-check-certificate https://github.com/camunda-community-hub/zeebe-keycloak-interceptor/releases/download/1.2.11/zeebe-keycloak-interceptor-1.2.11.zip | busybox unzip -j -d /interceptors - *jar-with-dependencies.jar && ls -al /interceptors']
-    volumeMounts:
-      - mountPath: /interceptors
-        name: interceptors
-  # configure interceptor
-  env:
-  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_ID
-    value: "keycloak"
-  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_JARPATH
-    value: /interceptors/zeebe-keycloak-interceptor-1.2.11-jar-with-dependencies.jar
-  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_CLASSNAME
-    value: "org.camunda.community.zeebe.keycloak.interceptor.ZeebeKeycloakInterceptor"
-  extraVolumeMounts:
-  - mountPath: /interceptors
-    name: interceptors
-  
-  # limit resources
   replicas: 1
+
   resources:
     requests:
       cpu: "100m"

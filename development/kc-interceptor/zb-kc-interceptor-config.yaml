@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kubernetes.io/description: Contains the configuration for the keycloak interceptor adding oAuth
+     to the zeebe gatway. See https://github.com/camunda-community-hub/zeebe-keycloak-interceptor
+  name: zb-kc-interceptor-config
+  namespace: camunda
+data:
+  zeebe-keycloak.json: |
+    {
+      "zeebeKeycloak": {
+        "serverUrl": "http://localhost:8080",
+        "realm": "camunda-platform",
+        "grantType": "client_credentials",
+        "clientId": "test-client-id",
+        "clientSecret": "test-client-secret",
+        "username": "test-username",
+        "password": "test-password",
+        "expectedAudience": "test-expected-audience",
+        "expectedIssuedFor": "test-expected-issued-for",
+        "allowedIssuers": [],
+        "minTimeBetweenJwksRequests": "12 s",
+        "publicKeyCacheTtl": "12 d"
+      }
+    }

@@ -1,0 +1,99 @@
+# Chart values for the Camunda Platform 8 Helm chart.
+# This file deliberately contains only the values that differ from the defaults.
+# For changes and documentation, use your favorite diff tool to compare it with:
+# https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform/values.yaml
+
+# This is a very small cluster useful for running locally and for development
+
+global:
+  image:
+    # allways work with the latest versions in development
+    tag: latest
+  identity:
+    auth:
+      # Disable the Identity authentication
+      # it will fall back to basic-auth: demo/demo as default user
+      enabled: false
+
+identity:
+  enabled: false
+
+optimize:
+  enabled: false
+
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 1Gi
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "512m"
+      memory: "2Gi"
+
+zeebe-gateway:
+  logLevel: DEBUG
+# add interceptor jar to container
+  extraVolumes:
+  - name: interceptors
+    emptyDir: {}
+  extraInitContainers:
+  - name: init-interceptors
+    image: busybox
+    # k logs -l app.kubernetes.io/component=zeebe-gateway -c init-interceptors
+    command: ['/bin/sh', '-c']
+    args: ['wget -qO- --no-check-certificate https://github.com/camunda-community-hub/zeebe-keycloak-interceptor/releases/download/1.2.11/zeebe-keycloak-interceptor-1.2.11.zip | busybox unzip -j -d /interceptors - *jar-with-dependencies.jar && ls -al /interceptors']
+    volumeMounts:
+      - mountPath: /interceptors
+        name: interceptors
+  # configure interceptor
+  env:
+  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_ID
+    value: "keycloak"
+  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_JARPATH
+    value: /interceptors/zeebe-keycloak-interceptor-1.2.11-jar-with-dependencies.jar
+  - name: ZEEBE_GATEWAY_INTERCEPTORS_0_CLASSNAME
+    value: "org.camunda.community.zeebe.keycloak.interceptor.ZeebeKeycloakInterceptor"
+  extraVolumeMounts:
+  - mountPath: /interceptors
+    name: interceptors
+  
+  # limit resources
+  replicas: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+  logLevel: ERROR
+
+elasticsearch:
+  enabled: true
+  imageTag: 7.17.3
+  replicas: 1
+  minimumMasterNodes: 1
+  # Allow no backup for single node setups
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+  # Request smaller persistent volumes.
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 15Gi

@@ -41,6 +41,12 @@ zeebe-gateway:
   extraVolumes:
   - name: interceptors
     emptyDir: {}
+  - name: kc-interceptor-config
+    configMap:
+      name: zb-kc-interceptor-config
+      items:
+      - key: "zeebe-keycloak.json"
+        path: "zeebe-keycloak.json"
   extraInitContainers:
   - name: init-interceptors
     image: busybox
@@ -58,10 +64,14 @@ zeebe-gateway:
     value: /interceptors/zeebe-keycloak-interceptor-1.2.11-jar-with-dependencies.jar
   - name: ZEEBE_GATEWAY_INTERCEPTORS_0_CLASSNAME
     value: "org.camunda.community.zeebe.keycloak.interceptor.ZeebeKeycloakInterceptor"
+  - name: ZEEBE_GATEWAY_SECURITY_KEYCLOAK_CONFIG_PATH
+    value: /usr/local/zeebe/config/zeebe-keycloak.json
   extraVolumeMounts:
   - mountPath: /interceptors
     name: interceptors
-  
+  - mountPath: /usr/local/zeebe/config/zeebe-keycloak.json
+    subPath: zeebe-keycloak.json
+    name: kc-interceptor-config
   # limit resources
   replicas: 1
   resources:
@@ -71,8 +81,6 @@ zeebe-gateway:
     limits:
       cpu: "1000m"
       memory: "1Gi"
-
-  logLevel: ERROR
 
 elasticsearch:
   enabled: true

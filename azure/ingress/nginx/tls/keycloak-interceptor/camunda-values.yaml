@@ -36,8 +36,8 @@ optimize:
   contextPath: "/optimize"
 
 identity:
-  contextPath: "/  "
-  fullURL: "https://dnslabel.location.cloudapp.azure.com/  "
+  contextPath: "/identity"
+  fullURL: "https://dnslabel.location.cloudapp.azure.com/identity"
   
   keycloak:
     extraEnvVars:
@@ -49,7 +49,7 @@ identity:
 zeebe-gateway:
   logLevel: DEBUG
   ingress:
-    enabled: true
+    enabled: false
     className: nginx
     host: "dnslabel.location.cloudapp.azure.com"
 # reduced resources for non-prod use

@@ -54,10 +54,6 @@ clean-camunda:
 	-kubectl delete -n $(namespace) pvc -l app=elasticsearch-master
 	-kubectl delete namespace $(namespace)
 
-.PHONY: logs-zebee-gateway
-logs-zebee-gateway:
-	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=zeebe-gateway
-
 .PHONY: zeebe-logs
 zeebe-logs:
 	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=zeebe
@@ -126,21 +122,3 @@ port-optimize:
 pods:
 	kubectl get pods --namespace $(namespace)
 
-.PHONY: url-grafana
-url-grafana:
-	@echo "http://`kubectl get svc metrics-grafana-loadbalancer -n default -o 'custom-columns=ip:status.loadBalancer.ingress[0].ip' | tail -n 1`/d/I4lo7_EZk/zeebe?var-namespace=$(namespace)"
-
-.PHONY: open-grafana
-open-grafana:
-	xdg-open http://$(shell kubectl get services metrics-grafana-loadbalancer -n default -o jsonpath={..ip})/d/I4lo7_EZk/zeebe?var-namespace=$(namespace) &
-
-.PHONY: operate-config
-operate-config:
-	kubectl get cm -n $(namespace) camunda-operate -o=yaml
-
-.PHONY: metrics
-metrics:
-	kubectl get cm -n $(namespace) camunda-operate -o=yaml | \
-	sed "s/health,/health,metrics,/g;" | \
-	kubectl create cm camunda-operate -o yaml --dry-run=client | \
-	kubectl replace -f - 

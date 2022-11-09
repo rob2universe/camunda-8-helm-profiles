@@ -14,8 +14,3 @@ nginx-dns-tls:
 camunda-values-nginx-tls.yaml: ingress-ip-from-service
 	@echo Ingress controller will use fqdn: $(fqdn)
 	@sed "s/dnslabel.location.cloudapp.azure.com/$(fqdn)/g;" camunda-values.yaml > ./$(chartValues)
-	
-# create public zeebe ingress using fully qualified domain name
-.PHONY: public-zeebe-ingress
-public-zeebe-ingress: 
-	cat $(root)/azure/include/public-zeebe-ingress.yaml | sed -E "s/MY_HOSTNAME/$(fqdn)/g;" | kubectl create -n $(namespace) -f -

@@ -62,6 +62,9 @@ zeebe-gateway:
     enabled: true
     className: nginx
     host: "dnslabel.location.cloudapp.azure.com"
+    tls:
+      enabled: true
+      secretName: "tls-secret"
   replicas: 1
   resources:
     requests:

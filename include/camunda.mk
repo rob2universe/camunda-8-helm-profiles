@@ -58,6 +58,10 @@ clean-camunda:
 zeebe-logs:
 	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=zeebe
 
+.PHONY: zeebe-gateway-logs
+zeebe-gateway-logs:
+	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=zeebe-gateway
+
 .PHONY: keycloak-logs
 keycloak-logs:
 	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=keycloak

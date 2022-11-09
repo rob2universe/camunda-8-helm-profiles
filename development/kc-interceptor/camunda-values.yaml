@@ -4,22 +4,46 @@
 # https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform/values.yaml
 
 # This is a very small cluster useful for running locally and for development
-
 global:
+  ingress:
+    enabled: true
+    className: nginx
+    host: "127.0.0.1.nip.io"
   image:
-    # allways work with the latest versions in development
-    tag: latest
+    tag: 8.1.3
   identity:
     auth:
-      # Disable the Identity authentication
-      # it will fall back to basic-auth: demo/demo as default user
-      enabled: false
+      enabled: true
+      publicIssuerUrl: "http://127.0.0.1.nip.io/auth/realms/camunda-platform"
+      operate:
+        redirectUrl: "http://127.0.0.1.nip.io/operate"
+      tasklist:
+        redirectUrl: "http://127.0.0.1.nip.io/tasklist"
+      optimize:
+        redirectUrl: "http://127.0.0.1.nip.io/optimize"
 
-identity:
+operate:
+  contextPath: "/operate"
+
+tasklist:
   enabled: false
+  contextPath: "/tasklist"
 
 optimize:
   enabled: false
+  contextPath: "/optimize"
+
+identity:
+  contextPath: "/identity"
+  fullURL: "http://127.0.0.1.nip.io/identity"
+  
+  keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+      - name: KEYCLOAK_FRONTEND_URL
+        value: "http://127.0.0.1.nip.io/auth"
+
 
 zeebe:
   clusterSize: 1
@@ -66,6 +90,10 @@ zeebe-gateway:
     value: "org.camunda.community.zeebe.keycloak.interceptor.ZeebeKeycloakInterceptor"
   - name: ZEEBE_GATEWAY_SECURITY_KEYCLOAK_CONFIG_PATH
     value: /usr/local/zeebe/config/zeebe-keycloak.json
+  - name: JAVA_TOOL_OPTIONS
+    value: '-Xdebug -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:9991,server=y,suspend=n'
+  # - name: JAVA_OPTS
+  #   value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9991
   extraVolumeMounts:
   - mountPath: /interceptors
     name: interceptors

@@ -5,7 +5,7 @@ camunda:
 	helm repo update camunda
 	helm search repo $(chart)
 	helm install --namespace $(namespace) $(release) $(chart) -f $(chartValues) --skip-crds --create-namespace
-# 	-kubectl config set-context --current --namespace=$(namespace)
+	-kubectl config set-context --current --namespace=$(namespace)
 
 # .PHONY: namespace
 # namespace:
@@ -53,6 +53,10 @@ clean-camunda:
 	-kubectl delete -n $(namespace) pvc -l app.kubernetes.io/instance=$(release)
 	-kubectl delete -n $(namespace) pvc -l app=elasticsearch-master
 	-kubectl delete namespace $(namespace)
+
+.PHONY: logs-zebee-gateway
+logs-zebee-gateway:
+	kubectl logs -f -n $(namespace) -l app.kubernetes.io/name=zeebe-gateway
 
 .PHONY: zeebe-logs
 zeebe-logs:

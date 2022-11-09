@@ -36,8 +36,8 @@ optimize:
   contextPath: "/optimize"
 
 identity:
-  contextPath: "/identity"
-  fullURL: "https://mydnslabel.location.cloudapp.azure.com/identity"
+  contextPath: "/  "
+  fullURL: "https://dnslabel.location.cloudapp.azure.com/  "
   
   keycloak:
     extraEnvVars:

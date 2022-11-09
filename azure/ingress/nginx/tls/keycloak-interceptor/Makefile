@@ -59,7 +59,6 @@ zb-kc-interceptor-config:
 
 # 9 public-zeebe-ingress : add an ingress for GRPC communication to zeebe-gateway
 
-
 # Optional: Run 'make config-keycloak' from camunda.mk to allow non-ssl connections to Keycloak
 
 ### <--- End of setup --->

@@ -33,7 +33,7 @@ chartValues ?= camunda-values-nginx-tls.yaml
 .PHONY: all
 all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml kc-interceptor-config camunda annotate-ingress-tls external-urls
 
-# 0 kube from aks.mk: Create Kubernetes cluster. (No aplication gateway required)
+# 0 kube-nginx from aks.mk: Create Kubernetes cluster (no aplication gateway)
 .PHONY: kube
 kube: kube-nginx
 
@@ -41,25 +41,12 @@ kube: kube-nginx
 
 # 2 letsencrypt-staging/-prod from cert-manager.mk: create letsencrypt cert issuer
 
-# 3 create nginx ingress controller with dns and tls
-.PHONY: nginx-dns-tls
-nginx-dns-tls: 
-	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-	helm repo update ingress-nginx
-	helm search repo ingress-nginx
-	helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --wait \
-	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$(dnsLabel) \
-	--set controller.service.annotations."nginx\.ingress.kubernetes.io/ssl-redirect"="true" \
-	--set controller.service.annotations."cert-manager.io/cluster-issuer"="letsencrypt"
+# 3 nginx-dns-tls from nginx-tls: create nginx ingress controller with dns and tls
 
-# 4 create camunda-values-nginx.yaml with external ip from ingress controller's Loadbalancer
-.PHONY: camunda-values-nginx-tls.yaml
-camunda-values-nginx-tls.yaml: ingress-ip-from-service
-	@echo Ingress controller will use fqdn: $(fqdn)
-	@sed "s/dnslabel.location.cloudapp.azure.com/$(fqdn)/g;" camunda-values.yaml > ./$(chartValues)
+# 4 camunda-values-nginx-tls.yaml from nginx-tls: create camunda-values-nginx.yaml with fqdn
 
-#5 Add keycloak interceptor config map
-.PHONY: zb-kc-interceptor-config
+# 5 Add keycloak interceptor config map
+.PHONY: kc-interceptor-config
 zb-kc-interceptor-config: 
 	kubectl create namespace $(namespace)
 	kubectl apply -f zb-kc-interceptor-config.yaml -n $(namespace)
@@ -69,19 +56,9 @@ zb-kc-interceptor-config:
 # 7 annotate-ingress-tls from cert-manager.mk: add cluster-issuer annotation to nginx
 
 # 8 Show external URLs
-.PHONY: external-urls
-external-urls: ingress-ip-from-service
-	@echo https://$(fqdn)/auth
-	@echo https://$(fqdn)/identity
-	@echo https://$(fqdn)/operate
-	@echo https://$(fqdn)/tasklist
-	@echo https://$(fqdn)/optimize
-	@echo zbctl status --address $(fqdn):443
 
-# 8 public-zeebe-ingress : add an ingress for GRPC communication to zeebe-gateway
-.PHONY: public-zeebe-ingress
-public-zeebe-ingress: 
-	cat $(root)/azure/include/public-zeebe-ingress.yaml | sed -E "s/MY_HOSTNAME/$(fqdn)/g;" | kubectl create -n $(namespace) -f -
+# 9 public-zeebe-ingress : add an ingress for GRPC communication to zeebe-gateway
+
 
 # Optional: Run 'make config-keycloak' from camunda.mk to allow non-ssl connections to Keycloak
 
@@ -101,7 +78,9 @@ include $(root)/include/camunda.mk
 include $(root)/include/ingress-nginx.mk
 include $(root)/include/cert-manager.mk
 include $(root)/azure/include/aks.mk
-include $(root)/azure/include/fileshare.mk
+include $(root)/azure/ingress/include/azure-ingress.mk
+include $(root)/azure/ingress/nginx/tls/include/nginx-tls.mk
+
 # include $(root)/include/zbctl.mk
 
 

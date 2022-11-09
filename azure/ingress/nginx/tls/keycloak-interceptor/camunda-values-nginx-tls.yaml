@@ -8,7 +8,7 @@ global:
   ingress:
     enabled: true
     className: nginx
-    host: "dnslabel.location.cloudapp.azure.com"
+    host: "camapac.southeastasia.cloudapp.azure.com"
     tls:
       enabled: true
       secretName: "tls-secret"
@@ -18,13 +18,13 @@ global:
       # pullPolicy: Always
   identity:
     auth:
-      publicIssuerUrl: "https://dnslabel.location.cloudapp.azure.com/auth/realms/camunda-platform"
+      publicIssuerUrl: "https://camapac.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform"
       operate:
-        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/operate"
+        redirectUrl: "https://camapac.southeastasia.cloudapp.azure.com/operate"
       tasklist:
-        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/tasklist"
+        redirectUrl: "https://camapac.southeastasia.cloudapp.azure.com/tasklist"
       optimize:
-        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/optimize"
+        redirectUrl: "https://camapac.southeastasia.cloudapp.azure.com/optimize"
 
 operate:
   contextPath: "/operate"
@@ -37,21 +37,21 @@ optimize:
 
 identity:
   contextPath: "/identity"
-  fullURL: "https://mydnslabel.location.cloudapp.azure.com/identity"
+  fullURL: "https://mycamapac.southeastasia.cloudapp.azure.com/identity"
   
   keycloak:
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
       - name: KEYCLOAK_FRONTEND_URL
-        value: "https://dnslabel.location.cloudapp.azure.com/auth"
+        value: "https://camapac.southeastasia.cloudapp.azure.com/auth"
 
 zeebe-gateway:
   logLevel: DEBUG
   ingress:
     enabled: true
     className: nginx
-    host: "dnslabel.location.cloudapp.azure.com"
+    host: "camapac.southeastasia.cloudapp.azure.com"
 # reduced resources for non-prod use
   replicas: 1
   resources:

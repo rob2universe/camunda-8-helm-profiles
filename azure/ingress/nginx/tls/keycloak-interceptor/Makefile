@@ -7,7 +7,7 @@ region ?= southeastasia
 clusterName ?= camaks
 resourceGroup ?= camaks-rg
 # This dnsLabel value will be used like so: MY_DOMAIN_NAME.region.cloudapp.azure.com
-dnsLabel ?= camapac
+dnsLabel ?= camundaone
 machineType ?= Standard_A8_v2
 minSize ?= 1
 maxSize ?= 6
@@ -31,7 +31,7 @@ chart ?= camunda/camunda-platform
 chartValues ?= camunda-values-nginx-tls.yaml
 
 .PHONY: all
-all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml kc-interceptor-config camunda annotate-ingress-tls external-urls
+  all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml zb-kc-interceptor-config camunda annotate-ingress-tls external-urls
 
 # 0 kube-nginx from aks.mk: Create Kubernetes cluster (no aplication gateway)
 .PHONY: kube
@@ -46,7 +46,7 @@ kube: kube-nginx
 # 4 camunda-values-nginx-tls.yaml from nginx-tls: create camunda-values-nginx.yaml with fqdn
 
 # 5 Add keycloak interceptor config map
-.PHONY: kc-interceptor-config
+.PHONY: zb-kc-interceptor-config
 zb-kc-interceptor-config: 
 	kubectl create namespace $(namespace)
 	kubectl apply -f zb-kc-interceptor-config.yaml -n $(namespace)

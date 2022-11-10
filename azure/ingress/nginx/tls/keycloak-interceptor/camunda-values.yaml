@@ -49,9 +49,11 @@ identity:
 zeebe-gateway:
   logLevel: DEBUG
   ingress:
-    enabled: false
-    className: nginx
+    enabled: true
     host: "dnslabel.location.cloudapp.azure.com"
+    tls:
+      enabled: true
+      secretName: "tls-secret"
 # reduced resources for non-prod use
   replicas: 1
   resources:
@@ -89,18 +91,15 @@ zeebe-gateway:
     value: "org.camunda.community.zeebe.keycloak.interceptor.ZeebeKeycloakInterceptor"
   - name: ZEEBE_GATEWAY_SECURITY_KEYCLOAK_CONFIG_PATH
     value: /usr/local/zeebe/config/zeebe-keycloak.json
+  # enable remote debugging
   - name: JAVA_TOOL_OPTIONS
     value: '-Xdebug -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:9991,server=y,suspend=n'
-  # - name: JAVA_OPTS
-  #   value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9991
   extraVolumeMounts:
   - mountPath: /interceptors
     name: interceptors
   - mountPath: /usr/local/zeebe/config/zeebe-keycloak.json
     subPath: zeebe-keycloak.json
     name: kc-interceptor-config
-
-
 
 zeebe:
   clusterSize: 1

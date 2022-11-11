@@ -10,7 +10,7 @@ data:
   zeebe-keycloak.json: |
     {
       "zeebeKeycloak": {
-        "serverUrl": "https://camundaone.southeastasia.cloudapp.azure.com/auth",
+        "serverUrl": "https://YOUR_HOSTNAME/auth",
         "realm": "camunda-platform",
         "grantType": "client_credentials",
         "expectedAudience": "",

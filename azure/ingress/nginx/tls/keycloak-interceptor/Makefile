@@ -49,7 +49,7 @@ kube: kube-nginx
 .PHONY: zb-kc-interceptor-config
 zb-kc-interceptor-config: 
 	kubectl create namespace $(namespace)
-	kubectl apply -f zb-kc-interceptor-config.yaml -n $(namespace)
+	cat zb-kc-interceptor-config.yaml | sed -E "s/YOUR_HOSTNAME/$(fqdn)/g" | kubectl apply -n $(namespace) -f -
 
 # 6 helm install camunda from camunda.mk with own tls config, combined ingress
 
@@ -66,7 +66,7 @@ zb-kc-interceptor-config:
 # Update existing keycloak interceptor config
 .PHONY: update-zb-kc-interceptor-config
 update-zb-kc-interceptor-config: 
-	kubectl apply -f zb-kc-interceptor-config.yaml -n $(namespace)
+	cat zb-kc-interceptor-config.yaml | sed -E "s/YOUR_HOSTNAME/$(fqdn)/g" | kubectl apply -n $(namespace) -f -
 
 # Remove nginx ingress and Camunda from cluster
 .PHONY: clean

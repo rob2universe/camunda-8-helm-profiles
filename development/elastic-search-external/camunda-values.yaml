@@ -1,0 +1,116 @@
+# Chart values for the Camunda Platform 8 Helm chart.
+# This file deliberately contains only the values that differ from the defaults.
+# For changes and documentation, use your favorite diff tool to compare it with:
+# https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform/values.yaml
+
+# This is a very small cluster useful for running locally and for development
+
+global:
+  image:
+    tag: 8.1.3
+  identity:
+    auth:
+      enabled: false
+  elasticsearch:
+    url: http://elasticsearch-master-0:9200
+
+identity:
+  enabled: false
+  resources:
+    requests:
+      cpu: 600m
+      memory: 400Mi
+    limits:
+      cpu: 600m
+      memory: 400Mi
+
+operate:
+  resources:
+    requests:
+      cpu: 600m
+      memory: 400Mi
+    limits:
+      cpu: 600m
+      memory: 400Mi
+  env:
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_URL
+      value: "http://elasticsearch-master-0:9200/"
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_PASSWORD
+      value: "search"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_URL
+      value: "http://elasticsearch-master-0:9200/"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_PASSWORD
+      value: "search"
+
+tasklist:
+  resources:
+    requests:
+      cpu: 400m
+      memory: 1Gi
+    limits:
+      cpu: 400m
+      memory: 1Gi
+  env:
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_URL
+      value: "http://elasticsearch-master-0:9200/"
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_PASSWORD
+      value: "mysecretpassword"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_URL
+      value: "http://elasticsearch-master-0:9200/"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_PASSWORD
+      value: "mysecretpassword"
+
+optimize:
+  # PartitionCount defines how many Zeebe partitions are set up in the cluster and which should be imported by Optimize
+  partitionCount: "1"
+  image:
+    # Don't change the comment after the value, it's needed due to a bug yq. Check Makefile for more details.
+    tag: 3.9.2 # optimize.image.tag
+  env:
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SSL_ENABLED
+      value: "false"
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_PASSWORD
+      value: "mysecretpassword"
+  resources:
+    requests:
+      cpu: 600m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 1Gi
+
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 1Gi
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "512m"
+      memory: "2Gi"
+
+zeebe-gateway:
+  replicas: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+elasticsearch:
+  enabled: false

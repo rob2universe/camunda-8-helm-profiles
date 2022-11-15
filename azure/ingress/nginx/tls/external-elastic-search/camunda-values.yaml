@@ -41,13 +41,13 @@ operate:
     - name: CAMUNDA_OPERATE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPERATE_ELASTICSEARCH_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_URL
       value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_PREFIX"
       value: "robs-zeebe"
     - name: "CAMUNDA_OPERATE_ELASTICSEARCH_INDEXPREFIX"
@@ -61,13 +61,13 @@ tasklist:
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_URL
       value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_PREFIX
       value: "robs-zeebe"
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_INDEXPREFIX
@@ -81,7 +81,7 @@ optimize:
     - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: CAMUNDA_OPTIMIZE_ZEEBE_NAME
       value: "robs-zeebe"
   extraVolumes:
@@ -92,7 +92,7 @@ optimize:
       - key: "environment-config.yaml"
         path: "environment-config.yaml"
   extraVolumeMounts:
-  - mountPath: /optimize/config//zeebe-keycloak.json
+  - mountPath: /optimize/config/environment-config.yaml
     subPath: environment-config.yaml
     name: optimize-config
 
@@ -144,7 +144,7 @@ zeebe:
     - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_USERNAME
       value: "elastic"
     - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_PASSWORD
-      value: "KlzYYoA8gGky27dcIfDKtsu6"
+      value: "topsecret"
     - name: "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PREFIX"
       value: "robs-zeebe"
       

@@ -1,0 +1,154 @@
+# Chart values for the Camunda Platform 8 Helm chart.
+# This file deliberately contains only the values that differ from the defaults.
+# For changes and documentation, use your favorite diff tool to compare it with:
+# https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform/values.yaml
+# See options: https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform/README.md
+
+global:
+  elasticsearch:
+    # EXTERNAL ELASTIC SEARCH, https://CLUSTER_ID.REGION.CLOUD_PLATFORM.DOMAIN:PORT
+    url: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
+    host: camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com
+    port: 443
+
+  ingress:
+    enabled: true
+    className: nginx
+    host: "dnslabel.location.cloudapp.azure.com"
+    tls:
+      enabled: true
+      secretName: "tls-secret"
+  image:
+      tag: 8.1.3
+      # tag: latest
+      # pullPolicy: Alwaysmake clean camunda
+  identity:
+    auth:
+      enabled: true
+      publicIssuerUrl: "https://dnslabel.location.cloudapp.azure.com/auth/realms/camunda-platform"
+      operate:
+        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/operate"
+      tasklist:
+        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/tasklist"
+      optimize:
+        redirectUrl: "https://dnslabel.location.cloudapp.azure.com/optimize"
+
+operate:
+  contextPath: "/operate"
+  env:
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_URL
+      value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPERATE_ELASTICSEARCH_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_URL
+      value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_PREFIX"
+      value: "robs-zeebe"
+    - name: "CAMUNDA_OPERATE_ELASTICSEARCH_INDEXPREFIX"
+      value: "robs-operate"
+      
+tasklist:
+  contextPath: "/tasklist"
+  env:
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_URL
+      value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_URL
+      value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_PREFIX
+      value: "robs-zeebe"
+    - name: CAMUNDA_TASKLIST_ELASTICSEARCH_INDEXPREFIX
+      value: "robs-tasklist"
+
+optimize:
+  contextPath: "/optimize"
+  env:
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SSL_ENABLED
+      value: "true"
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_USERNAME
+      value: "elastic"
+    - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: CAMUNDA_OPTIMIZE_ZEEBE_NAME
+      value: "robs-zeebe"
+  extraVolumes:
+  - name: optimize-config
+    configMap:
+      name: optimize-config
+      items:
+      - key: "environment-config.yaml"
+        path: "environment-config.yaml"
+  extraVolumeMounts:
+  - mountPath: /optimize/config//zeebe-keycloak.json
+    subPath: environment-config.yaml
+    name: optimize-config
+
+identity:
+  enabeld: "true"
+  contextPath: "/identity"
+  fullURL: "https://dnslabel.location.cloudapp.azure.com/identity"
+  
+  keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+      - name: KEYCLOAK_FRONTEND_URL
+        value: "https://dnslabel.location.cloudapp.azure.com/auth"
+
+zeebe-gateway:
+  ingress:
+    enabled: true
+    className: nginx
+    host: "dnslabel.location.cloudapp.azure.com"
+  replicas: 1
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2048Mi"
+      cpu: "1000m"   
+
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 1Gi
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: "512m"
+      memory: "2Gi"
+  env:
+    - name: ZEEBE_BROKER_DATA_SNAPSHOTPERIOD
+      value: "5m"
+    - name: ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK
+      value: "0.85"
+    - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
+      value: "0.87"
+    - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_USERNAME
+      value: "elastic"
+    - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_PASSWORD
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
+    - name: "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PREFIX"
+      value: "robs-zeebe"
+      
+
+elasticsearch:
+  enabled: false 
+  

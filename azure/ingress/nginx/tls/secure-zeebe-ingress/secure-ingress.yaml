@@ -6,10 +6,10 @@ metadata:
   annotations:
     # nginx.ingress.kubernetes.io/auth-url: "https://bingo.southeastasia.cloudapp.azure.com/oauth2/auth"
     # nginx.ingress.kubernetes.io/auth-signin: "https://bingo.southeastasia.cloudapp.azure.com/oauth2/start?rd=https://bingo.southeastasia.cloudapp.azure.com"
-    ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-    # cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt
   labels:
     app.kubernetes.io/name: zeebe-gateway-oauth
 spec:
@@ -25,7 +25,7 @@ spec:
                 name: camunda-zeebe-gateway
                 port:
                   number: 26500
-  # tls:
-  #   - secretName: tls-secret
-  #     hosts:
-  #       - bingo.southeastasia.cloudapp.azure.com
+  tls:
+    - secretName: tls-secret
+      hosts:
+        - bingo.southeastasia.cloudapp.azure.com

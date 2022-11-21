@@ -4,8 +4,26 @@ metadata:
   name: camunda-zeebe-gateway-oauth
   namespace: camunda
   annotations:
-    # nginx.ingress.kubernetes.io/auth-url: "https://bingo.southeastasia.cloudapp.azure.com/oauth2/auth"
-    # nginx.ingress.kubernetes.io/auth-signin: "https://bingo.southeastasia.cloudapp.azure.com/oauth2/start?rd=https://bingo.southeastasia.cloudapp.azure.com"
+  # curl -L -X GET https://alpha.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform/.well-known/openid-configuration
+curl -L -X POST 'https://alpha.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'client_id=nginx' \
+  --data-urlencode 'grant_type=password' \
+  --data-urlencode 'client_secret=rivnAokYs0riGJkvXDkd9qniutQbIxJ7' \
+  --data-urlencode 'scope=openid' \
+  --data-urlencode 'username=nginx' \
+  --data-urlencode 'password=topsecret' | jq
+
+# curl -L -X POST 'https://alpha.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform/protocol/openid-connect/token' \
+# -H 'Content-Type: application/x-www-form-urlencoded' \
+# --data-urlencode 'client_id=nginx' \
+# --data-urlencode 'grant_type=client_credentials' \
+# --data-urlencode 'client_secret=jnEIVj6iNW6tVRZW3vkCClFoS9lTy2Pd' \
+# --data-urlencode 'scope=openid' | jq
+
+    nginx.ingress.kubernetes.io/auth-url: "https://alpha.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform/protocol/openid-connect/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://alpha.southeastasia.cloudapp.azure.com/auth/realms/camunda-platform/protocol/openid-connect/auth?client_id=nginx"
+    nginx.ingress.kubernetes.io/auth-signin-redirect-param: "redirect_uri"
     # ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
@@ -14,8 +32,12 @@ metadata:
     app.kubernetes.io/name: zeebe-gateway-oauth
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - alpha.southeastasia.cloudapp.azure.com
+      secretName: tls-secret
   rules:
-    - host: bingo.southeastasia.cloudapp.azure.com
+    - host: alpha.southeastasia.cloudapp.azure.com
       http:
         paths:
           - path: /secure
@@ -25,7 +47,3 @@ spec:
                 name: camunda-zeebe-gateway
                 port:
                   number: 26500
-  tls:
-    - secretName: tls-secret
-      hosts:
-        - bingo.southeastasia.cloudapp.azure.com

@@ -15,6 +15,8 @@ global:
     enabled: true
     className: nginx
     host: "dnslabel.location.cloudapp.azure.com"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
     tls:
       enabled: true
       secretName: "tls-secret"
@@ -41,19 +43,20 @@ operate:
     - name: CAMUNDA_OPERATE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPERATE_ELASTICSEARCH_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_URL
       value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPERATE_ZEEBE_ELASTICSEARCH_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_PREFIX"
       value: "robs-zeebe"
     - name: "CAMUNDA_OPERATE_ELASTICSEARCH_INDEXPREFIX"
       value: "robs-operate"
       
 tasklist:
+  enabled: false
   contextPath: "/tasklist"
   env:
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_URL
@@ -61,19 +64,20 @@ tasklist:
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_URL
       value: "https://camunda-apac.es.asia-southeast1.gcp.elastic-cloud.com"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_USERNAME
       value: "elastic"
     - name: CAMUNDA_TASKLIST_ZEEBE_ELASTICSEARCH_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_PREFIX
       value: "robs-zeebe"
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_INDEXPREFIX
       value: "robs-tasklist"
 
 optimize:
+  enabled: false
   contextPath: "/optimize"
   env:
     - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SSL_ENABLED
@@ -81,7 +85,7 @@ optimize:
     - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_USERNAME
       value: "elastic"
     - name: CAMUNDA_OPTIMIZE_ELASTICSEARCH_SECURITY_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: CAMUNDA_OPTIMIZE_ZEEBE_NAME
       value: "robs-zeebe"
   extraVolumes:
@@ -113,6 +117,11 @@ zeebe-gateway:
     enabled: true
     className: nginx
     host: "dnslabel.location.cloudapp.azure.com"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
+    tls:
+      enabled: true
+      secretName: "tls-secret"
   replicas: 1
   resources:
     requests:
@@ -144,7 +153,7 @@ zeebe:
     - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_USERNAME
       value: "elastic"
     - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_AUTHENTICATION_PASSWORD
-      value: "topsecret"
+      value: "KlzYYoA8gGky27dcIfDKtsu6"
     - name: "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PREFIX"
       value: "robs-zeebe"
       

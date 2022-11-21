@@ -7,7 +7,7 @@ region ?= southeastasia
 clusterName ?= camaks
 resourceGroup ?= camunda-rg
 # This dnsLabel value will be used like so: MY_DOMAIN_NAME.region.cloudapp.azure.com
-dnsLabel ?= bingo
+dnsLabel ?= monday
 machineType ?= Standard_A8_v2
 minSize ?= 1
 maxSize ?= 6
@@ -31,7 +31,7 @@ chart ?= camunda/camunda-platform
 chartValues ?= camunda-values-nginx-tls.yaml
 
 .PHONY: all
-all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml camunda annotate-ingress-tls external-urls
+all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml camunda external-urls
 
 # 0 kube from aks.mk: Create Kubernetes cluster. (No aplication gateway required)
 .PHONY: kube
@@ -50,8 +50,8 @@ nginx-dns-tls:
 	helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --wait \
 	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$(dnsLabel) \
 	--set controller.service.annotations."nginx\.ingress.kubernetes.io/ssl-redirect"="true" \
-	--set controller.service.annotations."cert-manager.io/cluster-issuer"="letsencrypt"
-
+	--set controller.service.annotations."cert-manager.io/cluster-issuer"="letsencrypt" \
+	--set controller.config.error-log-level="info"
 # 4 create camunda-values-nginx.yaml with external ip from ingress controller's Loadbalancer
 .PHONY: camunda-values-nginx-tls.yaml
 camunda-values-nginx-tls.yaml: ingress-hostname-from-service

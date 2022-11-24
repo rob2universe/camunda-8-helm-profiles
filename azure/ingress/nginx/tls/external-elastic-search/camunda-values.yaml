@@ -73,6 +73,10 @@ tasklist:
       value: "robs-zeebe"
     - name: CAMUNDA_TASKLIST_ELASTICSEARCH_INDEXPREFIX
       value: "robs-tasklist"
+    - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
+      value: "https://dnslabel.location.cloudapp.azure.com/auth/realms/camunda-platform/protocol/openid-connect/certs"
+    - name: CAMUNDA_OPTIMIZE_API_AUDIENCE
+      value: "optimize-api"
 
 optimize:
   contextPath: "/optimize"

@@ -5,9 +5,9 @@
 
 region ?= southeastasia
 clusterName ?= camaks
-resourceGroup ?= camunda-rg
+resourceGroup ?= robs-rg
 # This dnsLabel value will be used like so: MY_DOMAIN_NAME.region.cloudapp.azure.com
-dnsLabel ?= monday
+dnsLabel ?= friday
 machineType ?= Standard_A8_v2
 minSize ?= 1
 maxSize ?= 6
@@ -51,7 +51,7 @@ nginx-dns-tls:
 	--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$(dnsLabel) \
 	--set controller.service.annotations."nginx\.ingress.kubernetes.io/ssl-redirect"="true" \
 	--set controller.service.annotations."cert-manager.io/cluster-issuer"="letsencrypt" \
-	--set controller.config.error-log-level="info"
+	--set controller.config.error-log-level="debug"
 # 4 create camunda-values-nginx.yaml with external ip from ingress controller's Loadbalancer
 .PHONY: camunda-values-nginx-tls.yaml
 camunda-values-nginx-tls.yaml: ingress-hostname-from-service
@@ -73,17 +73,13 @@ external-urls: ingress-hostname-from-service
 	@echo https://$(fqdn)/optimize
 	@echo zbctl status --address $(fqdn):443
 
-.PHONY: optimize-config-map
-optimize-config-map:
-# kubectl create namespace $(namespace)
-	kubectl apply -n $(namespace) -f ./optimize-config.yaml
 
 # Optional: Run 'make config-keycloak' from camunda.mk to allow non-ssl connections to Keycloak
 
 ### <--- End of setup --->
 
 .PHONY: update-camunda-tls
-update-camunda-tls: camunda-values-nginx-tls.yaml optimize-config-map camunda annotate-ingress-tls
+update-camunda-tls: camunda-values-nginx-tls.yaml camunda
 
 # Remove nginx ingress and Camunda from cluster
 .PHONY: clean
@@ -97,4 +93,6 @@ include $(root)/azure/include/aks.mk
 include $(root)/azure/include/fileshare.mk
 # include $(root)/include/zbctl.mk
 
-
+.PHONY: annotate-zeebe-oauth2
+annotate-zeebe-oauth2:
+	kubectl -n ingres-nginx annotate ingress camunda-camunda-platform cert-manager.io/cluster-issuer=letsencrypt

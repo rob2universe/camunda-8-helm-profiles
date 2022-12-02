@@ -5,7 +5,7 @@
 
 region ?= southeastasia
 clusterName ?= camaks
-resourceGroup ?= camunda-rg
+resourceGroup ?= robs-rg
 # This dnsLabel value will be used like so: MY_DOMAIN_NAME.region.cloudapp.azure.com
 dnsLabel ?= bingo
 machineType ?= Standard_A8_v2
@@ -31,7 +31,7 @@ chart ?= camunda/camunda-platform
 chartValues ?= camunda-values-nginx-tls.yaml
 
 .PHONY: all
-all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml camunda annotate-ingress-tls external-urls
+all: cert-manager letsencrypt-prod nginx-dns-tls camunda-values-nginx-tls.yaml camunda external-urls
 
 # 0 kube from aks.mk: Create Kubernetes cluster. (No aplication gateway required)
 .PHONY: kube

@@ -23,10 +23,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - friday.southeastasia.cloudapp.azure.com
+      - dnslabel.location.cloudapp.azure.com
       secretName: tls-secret
   rules:
-  - host: friday.southeastasia.cloudapp.azure.com
+  - host: dnslabel.location.cloudapp.azure.com
     http:
       paths:
         - path: /echo
